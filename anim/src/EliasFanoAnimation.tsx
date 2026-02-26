@@ -9,13 +9,22 @@ import { Buckets } from "./Buckets";
 const SVG_W = 900;
 const SVG_H = 450;
 
-// Horizontal positions for 7 boxes (centered-ish)
+// Horizontal positions for 7 sorted boxes
 const BOX_SPACING = 95;
 const BOX_START_X = 200;
 const BOX_Y = 40;
 
 function positionFor(index: number) {
   return { x: BOX_START_X + index * BOX_SPACING, y: BOX_Y };
+}
+
+// Big-mode positions for step 0 (vertically centered, spread out)
+const BIG_SPACING = 105;
+const BIG_START_X = (SVG_W - 6 * BIG_SPACING) / 2; // center 7 items
+const BIG_Y = SVG_H / 2 - 15; // vertically center the text
+
+function bigPositionFor(index: number) {
+  return { x: BIG_START_X + index * BIG_SPACING, y: BIG_Y };
 }
 
 // Lower-bits source positions: computed from NumberBox layout constants
@@ -42,6 +51,7 @@ export function EliasFanoAnimation() {
     isLastSection,
     nextSection,
     prevSection,
+    sectionIndex,
   } = useStepPlayer();
 
   // Determine order: unsorted or sorted
@@ -54,8 +64,7 @@ export function EliasFanoAnimation() {
       <div className="header">
         <span className="header-title">Elias-Fano: {sectionName}</span>
         <span className="header-step">
-          {localStepIndex}/{sectionStepCount - 1} —{" "}
-          {STEP_LABELS[step]}
+          {STEP_LABELS[step]} — {sectionIndex + 1}.{localStepIndex + 1}
         </span>
       </div>
 
@@ -107,7 +116,12 @@ export function EliasFanoAnimation() {
         {/* Number boxes */}
         {displayOrder.map((value, displayIndex) => {
           const elem = ELEMENTS.find((e) => e.value === value)!;
-          const pos = positionFor(displayIndex);
+          const bigMode = !reached("sorted");
+          const pos = bigMode
+            ? bigPositionFor(displayIndex)
+            : positionFor(displayIndex);
+          const sortedIndex = SORTED.indexOf(value);
+          const flyDelay = sortedIndex * 0.15;
 
           return (
             <NumberBox
@@ -120,6 +134,7 @@ export function EliasFanoAnimation() {
               y={pos.y}
               step={step}
               reached={reached}
+              flyDelay={flyDelay}
             />
           );
         })}

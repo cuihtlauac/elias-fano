@@ -11,6 +11,7 @@ interface Props {
   y: number;
   step: Step;
   reached: (s: Step) => boolean;
+  flyDelay?: number;
 }
 
 // Decimal box: square
@@ -34,7 +35,12 @@ export const SPLIT_GAP = 4;
 // Full (unsplit) binary box width
 const FULL_BIN_W = 60;
 
-const TRANSITION = { type: "spring", stiffness: 120, damping: 20 };
+// Scale factor for big numbers at step 0
+export const BIG_SCALE = 2.0;
+
+// Box perimeter for pen-draw stroke animation
+const BOX_PERIMETER = 4 * DEC_SIZE; // 120
+
 const SPLIT_TRANSITION = { type: "spring", stiffness: 80, damping: 18 };
 
 // When split: upper shifts left, lower shifts right, relative to center
@@ -51,17 +57,35 @@ export function NumberBox({
   y,
   step: _step,
   reached,
+  flyDelay = 0,
 }: Props) {
   const showBinary = reached("binary");
   const showColor = reached("color-split");
+  const sorted = reached("sorted");
+
+  // Position transition: instant before sorted, slow spring after
+  const posTransition = sorted
+    ? { type: "spring" as const, stiffness: 30, damping: 14, delay: flyDelay }
+    : { duration: 0 };
+
+  // Scale transition: linear tween so shrink is gradual throughout the flight
+  const scaleTransition = sorted
+    ? { duration: 1.5, ease: "linear" as const, delay: flyDelay }
+    : { duration: 0 };
+
+  // Pen-draw transition for decimal box border
+  const penDrawTransition = sorted
+    ? { duration: 0.8, delay: flyDelay + 1.0, ease: "easeInOut" as const }
+    : { duration: 0 };
 
   return (
     <motion.g
+      initial={false}
       animate={{ x, y }}
-      transition={TRANSITION}
+      transition={posTransition}
     >
-      {/* Decimal value box (square) */}
-      <rect
+      {/* Decimal value box (square) — pen-drawn after fly */}
+      <motion.rect
         x={-DEC_SIZE / 2}
         y={DEC_Y}
         width={DEC_SIZE}
@@ -69,17 +93,29 @@ export function NumberBox({
         fill="none"
         stroke="black"
         strokeWidth={1}
+        strokeDasharray={BOX_PERIMETER}
+        initial={false}
+        animate={{ strokeDashoffset: sorted ? 0 : BOX_PERIMETER }}
+        transition={penDrawTransition}
       />
-      <text
-        x={0}
-        y={DEC_Y + DEC_SIZE / 2 + 5}
-        textAnchor="middle"
-        fontWeight="bold"
-        fontSize={16}
-        fontFamily="Arial, sans-serif"
+      {/* Scale wrapper for decimal text */}
+      <motion.g
+        initial={false}
+        animate={{ scale: sorted ? 1 : BIG_SCALE }}
+        transition={scaleTransition}
+        style={{ transformOrigin: "0px -15px" }}
       >
-        {value}
-      </text>
+        <text
+          x={0}
+          y={DEC_Y + DEC_SIZE / 2 + 5}
+          textAnchor="middle"
+          fontWeight="bold"
+          fontSize={16}
+          fontFamily="Arial, sans-serif"
+        >
+          {value}
+        </text>
+      </motion.g>
 
       {/* Binary representation */}
       {showBinary && !showColor && (
