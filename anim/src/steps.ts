@@ -37,8 +37,11 @@ export const SECTIONS: readonly Section[] = [
       "counts-to-unary",
       "merge-bitvector",
       "show-total",
-      "summary",
     ],
+  },
+  {
+    name: "Summary",
+    steps: ["summary"],
   },
   // Future: { name: "Select", steps: [...] },
 ];

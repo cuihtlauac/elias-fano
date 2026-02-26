@@ -40,20 +40,21 @@ export const UNARY_PARTS = BUCKET_COUNTS.map(
   (c) => "1".repeat(c) + "0"
 );
 
-// Non-zero buckets in order (for the flying counts animation)
-export const NONZERO_BUCKETS = BUCKET_COUNTS
-  .map((count, bucketIndex) => ({
-    bucketIndex,
-    count,
-    unary: UNARY_PARTS[bucketIndex],
-  }))
-  .filter((b) => b.count > 0);
+// All buckets in order (for the flying counts animation)
+export const ALL_BUCKETS = BUCKET_COUNTS.map((count, bucketIndex) => ({
+  bucketIndex,
+  count,
+  unary: UNARY_PARTS[bucketIndex],
+}));
+
+// Non-zero buckets (kept for backward compat)
+export const NONZERO_BUCKETS = ALL_BUCKETS.filter((b) => b.count > 0);
 
 // Bar layout constants (shared between Buckets and LowerBitsBar for merge)
 export const BAR_CHAR_W = 11;
 export const BAR_PAD = 20;
 
-const UPPER_BAR_STRINGS = NONZERO_BUCKETS.map((b) => b.unary);
+const UPPER_BAR_STRINGS = ALL_BUCKETS.map((b) => b.unary);
 const UPPER_BAR_JOINED = UPPER_BAR_STRINGS.join(" ");
 export const UPPER_BAR_W = UPPER_BAR_JOINED.length * BAR_CHAR_W + BAR_PAD;
 

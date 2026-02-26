@@ -90,7 +90,7 @@ export function EliasFanoAnimation() {
       <div className="header">
         <span className="header-title">Elias-Fano: {sectionName}</span>
         <span className="header-step">
-          {STEP_LABELS[step]} — {sectionIndex + 1}.{localStepIndex}
+          {STEP_LABELS[step]} — {sectionIndex}.{localStepIndex}
         </span>
       </div>
 
@@ -195,7 +195,7 @@ export function EliasFanoAnimation() {
             textAnchor="middle"
             fontFamily="Arial, sans-serif"
             fontWeight="bold"
-            fontSize={30}
+            fontSize={22}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}

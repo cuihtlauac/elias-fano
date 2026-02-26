@@ -3,7 +3,7 @@ import {
   NUM_BUCKETS,
   BUCKET_COUNTS,
   ELEMENTS,
-  NONZERO_BUCKETS,
+  ALL_BUCKETS,
   UNARY_PARTS,
   UPPER_MERGED_X,
 } from "./data";
@@ -42,25 +42,27 @@ const LAST_ARROW_PER_BUCKET: number[] = Array.from(
   }
 );
 
-// --- Destination layout for the upper-bits bar (bottom left) ---
-const BAR_X = 200;
+// --- Destination layout for the upper-bits bar (left of "+") ---
+const PLUS_X = 440; // must match the "+" sign position in EliasFanoAnimation
+const PLUS_GAP = 50; // gap between bar edge and "+"
 const BAR_Y = 320;
 const BAR_H = 40;
 const CHAR_W = 11;
 
 // Compute destination positions for flying counts
-// They'll eventually show unary strings side by side
-const UNARY_STRINGS = NONZERO_BUCKETS.map((b) => b.unary);
+// They'll eventually show unary strings side by side (all buckets)
+const UNARY_STRINGS = ALL_BUCKETS.map((b) => b.unary);
 const UNARY_JOINED = UNARY_STRINGS.join(" ");
 const BAR_W = UNARY_JOINED.length * CHAR_W + 20;
+const BAR_X = PLUS_X - PLUS_GAP - BAR_W;
 const BOX_PERIMETER = 2 * (BAR_W + BAR_H);
 
-function unaryDestX(nzIndex: number): number {
+function unaryDestX(bucketIdx: number): number {
   let offset = 0;
-  for (let j = 0; j < nzIndex; j++) {
+  for (let j = 0; j < bucketIdx; j++) {
     offset += UNARY_STRINGS[j].length + 1;
   }
-  offset += UNARY_STRINGS[nzIndex].length / 2;
+  offset += UNARY_STRINGS[bucketIdx].length / 2;
   const totalChars = UNARY_JOINED.length;
   const textStartX = BAR_X + (BAR_W - totalChars * CHAR_W) / 2;
   return textStartX + offset * CHAR_W;
@@ -148,16 +150,18 @@ export function Buckets({ reached, sources }: Props) {
             </g>
 
             {/* Count circle + number — stays at bucket */}
-            {showArrows && (
+            {(isZero ? fadeZero : showArrows) && (
               <motion.g
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{
-                  opacity: (fadeZero && isZero) || isSummary ? 0 : 1,
+                  opacity: isSummary ? 0 : 1,
                   scale: 1,
                 }}
                 transition={{
                   duration: 0.3,
                   delay: isSummary
+                    ? 0
+                    : isZero
                     ? 0
                     : LAST_ARROW_PER_BUCKET[i] >= 0
                     ? LAST_ARROW_PER_BUCKET[i] * 0.15 + 1.1
@@ -207,19 +211,18 @@ export function Buckets({ reached, sources }: Props) {
       >
         {/* Flying numbers to bar */}
         {fly &&
-          NONZERO_BUCKETS.map((bucket, nzIndex) => {
-            const bIdx = bucket.bucketIndex;
-            const startX = ORIGIN_X + bIdx * BUCKET_SPACING;
+          ALL_BUCKETS.map((bucket, idx) => {
+            const startX = ORIGIN_X + idx * BUCKET_SPACING;
             const startY = ORIGIN_Y - 12 + 5; // circle center + text offset
-            const destX = unaryDestX(nzIndex);
+            const destX = unaryDestX(idx);
             const destY = DEST_BAR_Y;
 
             return (
               <motion.g
-                key={`fly-${bIdx}`}
+                key={`fly-${idx}`}
                 initial={{ x: startX, y: startY, scale: 1 }}
                 animate={{ x: destX, y: destY, scale: 18 / 12 }}
-                transition={{ ...SPRING, delay: nzIndex * 0.12 }}
+                transition={{ ...SPRING, delay: idx * 0.12 }}
               >
                 {/* Orange decimal — fades out when switching to unary */}
                 <motion.text
@@ -248,7 +251,7 @@ export function Buckets({ reached, sources }: Props) {
                   animate={{ opacity: toUnary ? 1 : 0 }}
                   transition={{ duration: 0.5 }}
                 >
-                  {UNARY_PARTS[bIdx]}
+                  {UNARY_PARTS[idx]}
                 </motion.text>
               </motion.g>
             );

@@ -10,8 +10,10 @@ interface Props {
   reached: (s: Step) => boolean;
 }
 
-// Destination layout for the bottom bar
-const BAR_X = 480;
+// Destination layout for the bottom bar (right of "+")
+const PLUS_X = 440; // must match the "+" sign position in EliasFanoAnimation
+const PLUS_GAP = 50; // gap between "+" and bar edge
+const BAR_X = PLUS_X + PLUS_GAP;
 const BAR_Y = 320;
 const BAR_H = 40;
 const TEXT_SIZE = 18;
