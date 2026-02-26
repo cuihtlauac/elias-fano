@@ -36,9 +36,6 @@ const DEST_Y = BAR_Y + BAR_H / 2 + 6; // text baseline
 // Box perimeter for the "pen drawing" effect
 const BOX_PERIMETER = 2 * (BAR_W + BAR_H);
 
-// Source offset: where the lower bits text sits relative to the NumberBox origin
-const SRC_OFFSET_Y = 16; // BIN_Y + BIN_TEXT_Y approx
-
 export function LowerBitsBar({ visible, sources }: Props) {
   if (!visible) return null;
 
@@ -48,32 +45,35 @@ export function LowerBitsBar({ visible, sources }: Props) {
       {ELEMENTS.map((elem, i) => {
         const src = sources[i];
         if (!src) return null;
-        // Source position (absolute SVG coords)
+        // Source position: exact center of the lower-bits tspan (measured from DOM)
         const sx = src.x;
-        const sy = src.y + SRC_OFFSET_Y;
+        const sy = src.y;
         // Destination position
         const dx = destX(i);
         const dy = DEST_Y;
 
         return (
-          <motion.text
+          <motion.g
             key={elem.value}
-            initial={{ x: sx, y: sy, opacity: 0.9 }}
-            animate={{ x: dx, y: dy, opacity: 1 }}
+            initial={{ x: sx, y: sy, scale: 1 }}
+            animate={{ x: dx, y: dy, scale: TEXT_SIZE / 13 }}
             transition={{
               type: "spring",
               stiffness: 30,
               damping: 14,
               delay: i * 0.15,
             }}
-            textAnchor="middle"
-            fontFamily="monospace"
-            fontSize={TEXT_SIZE}
-            fontWeight="bold"
-            fill="#1565c0"
           >
-            {elem.lower}
-          </motion.text>
+            <text
+              textAnchor="middle"
+              fontFamily="monospace"
+              fontSize={13}
+              fontWeight="bold"
+              fill="#1565c0"
+            >
+              {elem.lower}
+            </text>
+          </motion.g>
         );
       })}
 

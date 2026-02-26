@@ -176,61 +176,90 @@ export function Buckets({ reached, sources }: Props) {
               </AnimatePresence>
             </g>
 
-            {/* Count circle — rendered in absolute coords so it can fly */}
-            {circleVisible && (
+            {/* Count circle + number — stays at bucket */}
+            {showArrows && (
               <motion.g
-                initial={
-                  fly
-                    ? { x: circleAtBucketX, y: circleAtBucketY, opacity: 1, scale: 1 }
-                    : { opacity: 0, scale: 0.5, x: circleAtBucketX, y: circleAtBucketY }
-                }
+                initial={{ opacity: 0, scale: 0.5 }}
                 animate={{
-                  x: circleX,
-                  y: circleY,
                   opacity: fadeZero && isZero ? 0 : 1,
                   scale: 1,
                 }}
-                transition={
-                  fly && !isZero
-                    ? { ...SPRING, delay: nzIndex * 0.12 }
-                    : {
-                        duration: 0.3,
-                        delay:
-                          LAST_ARROW_PER_BUCKET[i] >= 0
-                            ? LAST_ARROW_PER_BUCKET[i] * 0.15 + 1.1
-                            : 1.1,
-                      }
-                }
+                transition={{
+                  duration: 0.3,
+                  delay:
+                    LAST_ARROW_PER_BUCKET[i] >= 0
+                      ? LAST_ARROW_PER_BUCKET[i] * 0.15 + 1.1
+                      : 1.1,
+                }}
               >
-                {showCircleBorder && (
-                  <motion.circle
+                <g transform={`translate(${x}, ${ORIGIN_Y - 12})`}>
+                  <circle
                     cx={0}
                     cy={0}
                     r={12}
                     fill="none"
-                    stroke={countColor}
+                    stroke="orange"
                     strokeWidth={2}
-                    animate={{ stroke: countColor }}
-                    transition={{ duration: 0.4 }}
                   />
-                )}
-                <AnimatePresence mode="wait">
-                  <motion.text
-                    key={countText}
+                  <text
                     x={0}
                     y={5}
                     textAnchor="middle"
-                    fontSize={toUnary && !isZero ? 16 : 12}
+                    fontSize={12}
+                    fill="orange"
                     fontWeight="bold"
-                    fontFamily={toUnary && !isZero ? "monospace" : "Arial, sans-serif"}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1, fill: countColor }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
+                    fontFamily="Arial, sans-serif"
                   >
-                    {countText}
-                  </motion.text>
-                </AnimatePresence>
+                    {count}
+                  </text>
+                </g>
+              </motion.g>
+            )}
+
+            {/* Flying number (no circle) — travels to the bar, grows in size */}
+            {fly && !isZero && nzIndex >= 0 && (
+              <motion.g
+                initial={{
+                  x: circleAtBucketX,
+                  y: circleAtBucketY,
+                  scale: 1,
+                }}
+                animate={{
+                  x: circleDestX,
+                  y: circleDestY,
+                  scale: 18 / 12, // grow from fontSize 12 to 18
+                }}
+                transition={{ ...SPRING, delay: nzIndex * 0.12 }}
+              >
+                {/* Orange decimal — fades out when switching to unary */}
+                <motion.text
+                  x={0}
+                  y={5}
+                  textAnchor="middle"
+                  fontSize={12}
+                  fontWeight="bold"
+                  fontFamily="Arial, sans-serif"
+                  fill="orange"
+                  animate={{ opacity: toUnary ? 0 : 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {count}
+                </motion.text>
+                {/* Red unary — fades in simultaneously */}
+                <motion.text
+                  x={0}
+                  y={5}
+                  textAnchor="middle"
+                  fontSize={12}
+                  fontWeight="bold"
+                  fontFamily="monospace"
+                  fill="#d32f2f"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: toUnary ? 1 : 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {UNARY_PARTS[i]}
+                </motion.text>
               </motion.g>
             )}
           </motion.g>

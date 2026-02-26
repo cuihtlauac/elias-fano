@@ -1,7 +1,7 @@
 import { UNSORTED, SORTED, ELEMENTS } from "./data";
 import { useStepPlayer } from "./useStepPlayer";
 import { STEP_LABELS } from "./steps";
-import { NumberBox } from "./NumberBox";
+import { NumberBox, BIN_TEXT_Y, LOWER_CENTER_X } from "./NumberBox";
 import { LowerBitsBar } from "./LowerBitsBar";
 import { Buckets } from "./Buckets";
 
@@ -15,6 +15,15 @@ const BOX_Y = 40;
 
 function positionFor(index: number) {
   return { x: BOX_START_X + index * BOX_SPACING, y: BOX_Y };
+}
+
+// Lower-bits source positions: computed from NumberBox layout constants
+function lowerBitsSourceFor(index: number) {
+  const pos = positionFor(index);
+  return {
+    x: pos.x + LOWER_CENTER_X,
+    y: pos.y + BIN_TEXT_Y,
+  };
 }
 
 export function EliasFanoAnimation() {
@@ -99,7 +108,7 @@ export function EliasFanoAnimation() {
         {/* Bottom bars */}
         <LowerBitsBar
           visible={reached("lower-to-bottom")}
-          sources={SORTED.map((_, i) => positionFor(i))}
+          sources={SORTED.map((_, i) => lowerBitsSourceFor(i))}
         />
       </svg>
     </div>
