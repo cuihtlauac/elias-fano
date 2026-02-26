@@ -44,6 +44,8 @@ Precomputes: binary representations, upper/lower bit splits, bucket counts, unar
 
 ### Steps (`steps.ts`)
 
+Steps are grouped into sections (currently one section: "Encoding"). Navigation supports both per-step (Arrow keys) and per-section (Shift+Arrow).
+
 1. **unsorted** — show the integers in arbitrary order
 2. **sorted** — slide them into sorted order
 3. **binary** — binary representation appears below each number
@@ -54,14 +56,18 @@ Precomputes: binary representations, upper/lower bit splits, bucket counts, unar
 8. **buckets-arrows** — arrows extend from upper bits to matching buckets; counts pop in as arrows land
 9. **counts-fade-zero** — zero counts fade away
 10. **counts-fly** — non-zero counts fly to bottom-left bar area
-11. **counts-to-unary** — counts morph to unary encoding, orange→red, pen-drawn box
-12. **upper-plus** — "+" sign appears between upper and lower bars
+11. **counts-to-unary** — counts morph to unary encoding, orange→red, pen-drawn box; "+" sign appears between bars
+12. **merge-bitvector** — upper and lower bars slide together into a merged bitvector; "+" disappears
+13. **show-total** — total bit count annotation appears ("12 + 2 × 7 = 26 bits")
+14. **summary** — everything slides up, buckets/arrows fade out, final layout with legend and totals
 
 ### Components
 
 | File | Role |
 |---|---|
-| `NumberBox.tsx` | Decimal box + binary box that splits into upper (red) / lower (blue) sub-boxes. Exports layout constants (`BIN_TEXT_Y`, `LOWER_CENTER_X`, etc.) for position arithmetic. |
-| `Buckets.tsx` | Bucket boxes, arrows, count circles, flying counts→unary bar, "+" sign |
-| `LowerBitsBar.tsx` | Blue lower-bits bitvector bar |
-| `EliasFanoAnimation.tsx` | Orchestrator: lays out components, wires step logic |
+| `NumberBox.tsx` | Decimal box + binary box that splits into upper (red) / lower (blue) sub-boxes. Exports layout constants (`BIN_TEXT_Y`, `BIN_Y`, `BIN_H`, `LOWER_CENTER_X`, `CHAR_W`, `UPPER_BOX_W`, `LOWER_BOX_W`, `SPLIT_GAP`, `BIG_SCALE`). |
+| `Buckets.tsx` | Bucket boxes, arrows (mask-based draw animation), count circles, flying counts→unary bar. Bar slides to `UPPER_MERGED_X` at merge step. |
+| `LowerBitsBar.tsx` | Blue lower-bits bitvector bar. Bar slides to `LOWER_MERGED_X` at merge step. |
+| `EliasFanoAnimation.tsx` | Orchestrator: lays out components, wires step logic, keyboard nav, header, legend, "+" sign, total bit count. Drives summary layout shift (105px up). |
+| `data.ts` | Also exports bar merge constants: `BAR_CHAR_W`, `BAR_PAD`, `UPPER_BAR_W`, `LOWER_BAR_W`, `UPPER_MERGED_X`, `LOWER_MERGED_X`. |
+| `useStepPlayer.ts` | Hook with per-step and per-section navigation (`next`/`prev`/`nextSection`/`prevSection`/`reached`/`goTo`). |

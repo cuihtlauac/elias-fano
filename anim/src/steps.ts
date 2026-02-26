@@ -17,7 +17,8 @@ export type Step =
   | "counts-fly"
   | "counts-to-unary"
   | "merge-bitvector"
-  | "show-total";
+  | "show-total"
+  | "summary";
 
 export const SECTIONS: readonly Section[] = [
   {
