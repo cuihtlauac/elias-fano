@@ -18,7 +18,8 @@ export type Step =
   | "counts-to-unary"
   | "merge-bitvector"
   | "show-total"
-  | "summary";
+  | "summary"
+  | "comparison";
 
 export const SECTIONS: readonly Section[] = [
   {
@@ -41,7 +42,7 @@ export const SECTIONS: readonly Section[] = [
   },
   {
     name: "Summary",
-    steps: ["summary"],
+    steps: ["summary", "comparison"],
   },
   // Future: { name: "Select", steps: [...] },
 ];
@@ -64,4 +65,5 @@ export const STEP_LABELS: Record<Step, string> = {
   "merge-bitvector":    "Merged bitvector",
   "show-total":         "Total bit count",
   "summary":            "Encoding complete",
+  "comparison":         "Comparison: L = 1",
 };

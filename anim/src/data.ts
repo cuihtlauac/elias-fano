@@ -67,3 +67,35 @@ const SVG_CENTER_X = 450;
 const MERGED_TOTAL_W = UPPER_BAR_W + LOWER_BAR_W;
 export const UPPER_MERGED_X = SVG_CENTER_X - MERGED_TOTAL_W / 2;
 export const LOWER_MERGED_X = UPPER_MERGED_X + UPPER_BAR_W;
+
+// --- L=1 variant for comparison block ---
+export const L1 = 1;
+
+export const ELEMENTS_L1 = SORTED.map((value, index) => ({
+  value,
+  binary: value.toString(2).padStart(W, "0"),
+  upper: (value >> L1).toString(2).padStart(W - L1, "0"),
+  lower: (value & ((1 << L1) - 1)).toString(2).padStart(L1, "0"),
+  index,
+}));
+
+export const NUM_BUCKETS_L1 = 1 << (W - L1); // 16
+export const BUCKET_COUNTS_L1: number[] = Array.from(
+  { length: NUM_BUCKETS_L1 },
+  (_, bucket) =>
+    ELEMENTS_L1.filter((e) => parseInt(e.upper, 2) === bucket).length
+);
+
+export const UNARY_PARTS_L1 = BUCKET_COUNTS_L1.map(
+  (c) => "1".repeat(c) + "0"
+);
+
+export const UNARY_JOINED_L1 = UNARY_PARTS_L1.join(" ");
+export const LOWER_JOINED_L1 = ELEMENTS_L1.map((e) => e.lower).join(" ");
+
+export const UPPER_BAR_W_L1 = UNARY_JOINED_L1.length * BAR_CHAR_W + BAR_PAD;
+export const LOWER_BAR_W_L1 = LOWER_JOINED_L1.length * BAR_CHAR_W + BAR_PAD;
+
+const MERGED_TOTAL_L1 = UPPER_BAR_W_L1 + LOWER_BAR_W_L1;
+export const UPPER_MERGED_X_L1 = SVG_CENTER_X - MERGED_TOTAL_L1 / 2;
+export const LOWER_MERGED_X_L1 = UPPER_MERGED_X_L1 + UPPER_BAR_W_L1;

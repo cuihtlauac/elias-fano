@@ -13,6 +13,7 @@ import { STEP_LABELS } from "./steps";
 import { NumberBox, BIN_Y, BIN_H, BIN_TEXT_Y, LOWER_CENTER_X } from "./NumberBox";
 import { LowerBitsBar } from "./LowerBitsBar";
 import { Buckets } from "./Buckets";
+import { ComparisonBlock } from "./ComparisonBlock";
 
 const SVG_W = 900;
 const SVG_H = 450;
@@ -204,30 +205,33 @@ export function EliasFanoAnimation() {
           </motion.text>
         )}
 
-        {/* Total bit count below merged bitvector */}
-        {reached("merge-bitvector") && (
+        {/* Total bit count to the right of merged bitvector */}
+        {reached("show-total") && (
           <motion.text
             fontFamily="Arial, sans-serif"
             fontWeight="bold"
-            fontSize={18}
-            initial={{ opacity: 0, x: 450, y: 390, textAnchor: "middle" as const }}
-            animate={{ 
+            fontSize={14}
+            textAnchor="start"
+            initial={{ opacity: 0, x: UPPER_MERGED_X + UPPER_BAR_W + LOWER_BAR_W + 15, y: 346 }}
+            animate={{
               opacity: 1,
-              x: reached("summary") ? (UPPER_MERGED_X + UPPER_BAR_W + LOWER_BAR_W + 30) : 450,
-              y: reached("summary") ? 196 : 390,
-              textAnchor: reached("summary") ? ("start" as const) : ("middle" as const)
+              x: UPPER_MERGED_X + UPPER_BAR_W + LOWER_BAR_W + 15,
+              y: reached("summary") ? 196 : 346,
             }}
-            transition={{ 
+            transition={{
               duration: 0.5,
               delay: reached("summary") ? 0.5 : 0
             }}
           >
-            <tspan fill="#d32f2f">12</tspan>
+            <tspan fill="#d32f2f">15</tspan>
             <tspan fill="black">{" + "}</tspan>
             <tspan fill="#1565c0">2</tspan>
-            <tspan fill="black">{" \u00D7 7 = 26 bits"}</tspan>
+            <tspan fill="black">{" \u00D7 7 = 29 bits"}</tspan>
           </motion.text>
         )}
+
+        {/* Comparison block: L=1 encoding */}
+        <ComparisonBlock visible={reached("comparison")} />
       </svg>
 
       {/* Controls */}
