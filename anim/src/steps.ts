@@ -41,7 +41,7 @@ export const SECTIONS: readonly Section[] = [
     ],
   },
   {
-    name: "Summary",
+    name: "Coding, cont'd",
     steps: ["summary", "comparison"],
   },
   // Future: { name: "Select", steps: [...] },

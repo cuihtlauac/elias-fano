@@ -14,6 +14,7 @@ import { NumberBox, BIN_Y, BIN_H, BIN_TEXT_Y, LOWER_CENTER_X } from "./NumberBox
 import { LowerBitsBar } from "./LowerBitsBar";
 import { Buckets } from "./Buckets";
 import { ComparisonBlock } from "./ComparisonBlock";
+import { ComparisonBlockL3 } from "./ComparisonBlockL3";
 
 const SVG_W = 900;
 const SVG_H = 450;
@@ -230,7 +231,10 @@ export function EliasFanoAnimation() {
           </motion.text>
         )}
 
-        {/* Comparison block: L=1 encoding */}
+        {/* Comparison block: L=3 encoding (above 3/2 row) */}
+        <ComparisonBlockL3 visible={reached("comparison")} />
+
+        {/* Comparison block: L=1 encoding (below 3/2 row) */}
         <ComparisonBlock visible={reached("comparison")} />
       </svg>
 

@@ -99,3 +99,35 @@ export const LOWER_BAR_W_L1 = LOWER_JOINED_L1.length * BAR_CHAR_W + BAR_PAD;
 const MERGED_TOTAL_L1 = UPPER_BAR_W_L1 + LOWER_BAR_W_L1;
 export const UPPER_MERGED_X_L1 = SVG_CENTER_X - MERGED_TOTAL_L1 / 2;
 export const LOWER_MERGED_X_L1 = UPPER_MERGED_X_L1 + UPPER_BAR_W_L1;
+
+// --- L=3 variant for comparison block ---
+export const L3 = 3;
+
+export const ELEMENTS_L3 = SORTED.map((value, index) => ({
+  value,
+  binary: value.toString(2).padStart(W, "0"),
+  upper: (value >> L3).toString(2).padStart(W - L3, "0"),
+  lower: (value & ((1 << L3) - 1)).toString(2).padStart(L3, "0"),
+  index,
+}));
+
+export const NUM_BUCKETS_L3 = 1 << (W - L3); // 4
+export const BUCKET_COUNTS_L3: number[] = Array.from(
+  { length: NUM_BUCKETS_L3 },
+  (_, bucket) =>
+    ELEMENTS_L3.filter((e) => parseInt(e.upper, 2) === bucket).length
+);
+
+export const UNARY_PARTS_L3 = BUCKET_COUNTS_L3.map(
+  (c) => "1".repeat(c) + "0"
+);
+
+export const UNARY_JOINED_L3 = UNARY_PARTS_L3.join(" ");
+export const LOWER_JOINED_L3 = ELEMENTS_L3.map((e) => e.lower).join(" ");
+
+export const UPPER_BAR_W_L3 = UNARY_JOINED_L3.length * BAR_CHAR_W + BAR_PAD;
+export const LOWER_BAR_W_L3 = LOWER_JOINED_L3.length * BAR_CHAR_W + BAR_PAD;
+
+const MERGED_TOTAL_L3 = UPPER_BAR_W_L3 + LOWER_BAR_W_L3;
+export const UPPER_MERGED_X_L3 = SVG_CENTER_X - MERGED_TOTAL_L3 / 2;
+export const LOWER_MERGED_X_L3 = UPPER_MERGED_X_L3 + UPPER_BAR_W_L3;
