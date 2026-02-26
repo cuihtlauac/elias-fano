@@ -41,10 +41,11 @@ The animation explains Elias-Fano encoding of a sorted integer sequence step by 
 
 Example: `[2, 3, 5, 7, 11, 13, 24]`, with `w=5` total bits, `l=2` lower bits.
 Precomputes: binary representations, upper/lower bit splits, bucket counts, unary encoding.
+Also exports `_L1` variants (L=1, 4 upper / 1 lower) for the comparison block: `ELEMENTS_L1`, `UNARY_PARTS_L1`, `UNARY_JOINED_L1`, `LOWER_JOINED_L1`, bar widths and merge positions.
 
 ### Steps (`steps.ts`)
 
-Steps are grouped into sections (currently one section: "Encoding"). Navigation supports both per-step (Arrow keys) and per-section (Shift+Arrow).
+Steps are grouped into sections ("Encoding" and "Summary"). Navigation supports both per-step (Arrow keys) and per-section (Shift+Arrow).
 
 1. **unsorted** — show the integers in arbitrary order
 2. **sorted** — slide them into sorted order
@@ -58,8 +59,9 @@ Steps are grouped into sections (currently one section: "Encoding"). Navigation 
 10. **counts-fly** — non-zero counts fly to bottom-left bar area
 11. **counts-to-unary** — counts morph to unary encoding, orange→red, pen-drawn box; "+" sign appears between bars
 12. **merge-bitvector** — upper and lower bars slide together into a merged bitvector; "+" disappears
-13. **show-total** — total bit count annotation appears ("12 + 2 × 7 = 26 bits")
+13. **show-total** — total bit count annotation appears to the right of the bitvector ("15 + 2 × 7 = 29 bits", fontSize 14)
 14. **summary** — everything slides up, buckets/arrows fade out, final layout with legend and totals
+15. **comparison** — static L=1 encoding row fades in below block 1: split binary sub-boxes (4 upper / 1 lower), merged unary + lower-bit bars, bit count to the right ("23 + 1 × 7 = 30 bits")
 
 ### Components
 
@@ -68,6 +70,7 @@ Steps are grouped into sections (currently one section: "Encoding"). Navigation 
 | `NumberBox.tsx` | Decimal box + binary box that splits into upper (red) / lower (blue) sub-boxes. Exports layout constants (`BIN_TEXT_Y`, `BIN_Y`, `BIN_H`, `LOWER_CENTER_X`, `CHAR_W`, `UPPER_BOX_W`, `LOWER_BOX_W`, `SPLIT_GAP`, `BIG_SCALE`). |
 | `Buckets.tsx` | Bucket boxes, arrows (mask-based draw animation), count circles, flying counts→unary bar. Bar slides to `UPPER_MERGED_X` at merge step. |
 | `LowerBitsBar.tsx` | Blue lower-bits bitvector bar. Bar slides to `LOWER_MERGED_X` at merge step. |
+| `ComparisonBlock.tsx` | Static L=1 encoding block: split binary sub-boxes, merged bars, legend, bit count. Single `motion.g` fade. |
 | `EliasFanoAnimation.tsx` | Orchestrator: lays out components, wires step logic, keyboard nav, header, legend, "+" sign, total bit count. Drives summary layout shift (105px up). |
-| `data.ts` | Also exports bar merge constants: `BAR_CHAR_W`, `BAR_PAD`, `UPPER_BAR_W`, `LOWER_BAR_W`, `UPPER_MERGED_X`, `LOWER_MERGED_X`. |
+| `data.ts` | Also exports bar merge constants: `BAR_CHAR_W`, `BAR_PAD`, `UPPER_BAR_W`, `LOWER_BAR_W`, `UPPER_MERGED_X`, `LOWER_MERGED_X`, plus `_L1` variants for comparison. |
 | `useStepPlayer.ts` | Hook with per-step and per-section navigation (`next`/`prev`/`nextSection`/`prevSection`/`reached`/`goTo`). |
