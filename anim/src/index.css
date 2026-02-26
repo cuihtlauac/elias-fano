@@ -17,10 +17,25 @@ body {
   padding: 1rem;
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.75rem 0;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.header-title {
+  font-weight: bold;
+  color: #213547;
+}
+
 .controls {
   display: flex;
+  justify-content: center;
   gap: 0.5rem;
-  align-items: center;
   padding: 0.75rem 0;
   font-size: 0.9rem;
 }
@@ -36,9 +51,4 @@ body {
 
 .controls button:hover {
   background: #e8e8e8;
-}
-
-.controls .step-label {
-  margin-left: auto;
-  color: #666;
 }

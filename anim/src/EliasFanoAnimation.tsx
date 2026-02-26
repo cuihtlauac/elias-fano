@@ -28,8 +28,21 @@ function lowerBitsSourceFor(index: number) {
 }
 
 export function EliasFanoAnimation() {
-  const { step, stepIndex, isFirst, isLast, next, prev, reached } =
-    useStepPlayer();
+  const {
+    step,
+    isFirst,
+    isLast,
+    next,
+    prev,
+    reached,
+    sectionName,
+    localStepIndex,
+    sectionStepCount,
+    isFirstSection,
+    isLastSection,
+    nextSection,
+    prevSection,
+  } = useStepPlayer();
 
   // Determine order: unsorted or sorted
   const isSorted = reached("sorted");
@@ -37,16 +50,12 @@ export function EliasFanoAnimation() {
 
   return (
     <div>
-      {/* Controls */}
-      <div className="controls">
-        <button onClick={prev} disabled={isFirst} aria-label="Previous step">
-          &#x25C0;
-        </button>
-        <button onClick={next} disabled={isLast} aria-label="Next step">
-          &#x25B6;
-        </button>
-        <span className="step-label">
-          Step {stepIndex + 1}: {STEP_LABELS[step]}
+      {/* Header */}
+      <div className="header">
+        <span className="header-title">Elias-Fano: {sectionName}</span>
+        <span className="header-step">
+          {localStepIndex}/{sectionStepCount - 1} —{" "}
+          {STEP_LABELS[step]}
         </span>
       </div>
 
@@ -148,6 +157,22 @@ export function EliasFanoAnimation() {
           </motion.text>
         )}
       </svg>
+
+      {/* Controls */}
+      <div className="controls">
+        <button onClick={prevSection} disabled={isFirstSection} aria-label="Previous section">
+          {"\u23EA\uFE0E"}
+        </button>
+        <button onClick={prev} disabled={isFirst} aria-label="Previous step">
+          &#x25C0;
+        </button>
+        <button onClick={next} disabled={isLast} aria-label="Next step">
+          &#x25B6;
+        </button>
+        <button onClick={nextSection} disabled={isLastSection} aria-label="Next section">
+          {"\u23E9\uFE0E"}
+        </button>
+      </div>
     </div>
   );
 }

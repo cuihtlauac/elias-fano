@@ -1,21 +1,48 @@
-// Animation steps — add or reorder as needed
-export const STEPS = [
-  "unsorted",           // 1. Show numbers in their unsorted order
-  "sorted",             // 2. Numbers slide into sorted order
-  "binary",             // 3. Binary representation appears below each number
-  "color-split",        // 4. Upper bits turn red, lower bits turn blue
-  "lower-to-bottom",    // 5. Lower bits copy and move to bottom-right
-  "buckets-decimal",    // 6. Bucket boxes appear with decimal labels 0–7
-  "buckets-binary",     // 7. Decimal labels morph into binary
-  "buckets-arrows",     // 8. Arrows from upper bits to buckets, counts appear
-  "counts-fade-zero",   // 9. Zero counts fade away
-  "counts-fly",         // 10. Non-zero counts fly to bottom left
-  "counts-to-unary",    // 11. Counts morph to unary, orange → red, box drawn
-  "merge-bitvector",    // 12. Red and blue bars slide together into one bitvector
-  "show-total",         // 13. Show total bit count below the bitvector
-] as const;
+// Animation steps — grouped into sections
+export interface Section {
+  readonly name: string;
+  readonly steps: readonly Step[];
+}
 
-export type Step = (typeof STEPS)[number];
+export type Step =
+  | "unsorted"
+  | "sorted"
+  | "binary"
+  | "color-split"
+  | "lower-to-bottom"
+  | "buckets-decimal"
+  | "buckets-binary"
+  | "buckets-arrows"
+  | "counts-fade-zero"
+  | "counts-fly"
+  | "counts-to-unary"
+  | "merge-bitvector"
+  | "show-total";
+
+export const SECTIONS: readonly Section[] = [
+  {
+    name: "Encoding",
+    steps: [
+      "unsorted",
+      "sorted",
+      "binary",
+      "color-split",
+      "lower-to-bottom",
+      "buckets-decimal",
+      "buckets-binary",
+      "buckets-arrows",
+      "counts-fade-zero",
+      "counts-fly",
+      "counts-to-unary",
+      "merge-bitvector",
+      "show-total",
+    ],
+  },
+  // Future: { name: "Select", steps: [...] },
+];
+
+// Derive flat STEPS from SECTIONS
+export const STEPS: readonly Step[] = SECTIONS.flatMap((s) => s.steps);
 
 export const STEP_LABELS: Record<Step, string> = {
   "unsorted":           "Unsorted sequence",
