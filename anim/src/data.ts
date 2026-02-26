@@ -131,3 +131,35 @@ export const LOWER_BAR_W_L3 = LOWER_JOINED_L3.length * BAR_CHAR_W + BAR_PAD;
 const MERGED_TOTAL_L3 = UPPER_BAR_W_L3 + LOWER_BAR_W_L3;
 export const UPPER_MERGED_X_L3 = SVG_CENTER_X - MERGED_TOTAL_L3 / 2;
 export const LOWER_MERGED_X_L3 = UPPER_MERGED_X_L3 + UPPER_BAR_W_L3;
+
+// --- select_1() precomputed data (L=2 encoding) ---
+
+// Flat unary string (no spaces): "110110101000100"
+export const UNARY_FLAT = UNARY_PARTS.join("");
+
+// Positions of 1-bits in the flat unary string
+export const ONE_POSITIONS: number[] = [];
+for (let i = 0; i < UNARY_FLAT.length; i++) {
+  if (UNARY_FLAT[i] === "1") ONE_POSITIONS.push(i);
+}
+// => [0, 1, 3, 4, 6, 8, 12]
+
+// Query: select_1(4) — find the element at index j=4
+export const SELECT_J = 4;
+export const SELECT_POS = ONE_POSITIONS[SELECT_J]; // position 6
+export const SELECT_UPPER_VAL = SELECT_POS - SELECT_J; // 2
+export const SELECT_UPPER_BIN = SELECT_UPPER_VAL.toString(2).padStart(W - L, "0"); // "010"
+export const SELECT_LOWER = ELEMENTS[SELECT_J].lower; // "11"
+export const SELECT_COMBINED = SELECT_UPPER_BIN + SELECT_LOWER; // "01011"
+export const SELECT_DECIMAL = ELEMENTS[SELECT_J].value; // 11
+
+// Lower-bits bar: individual slot positions (for highlighting the j-th slot)
+export const LOWER_BAR_SLOTS = ELEMENTS.map((e, i) => {
+  // Each slot is the lower-bit string, separated by spaces
+  // Position of slot i = sum of (lower.length + 1) for slots 0..i-1
+  let charOffset = 0;
+  for (let k = 0; k < i; k++) {
+    charOffset += ELEMENTS[k].lower.length + 1; // +1 for space
+  }
+  return { charOffset, text: e.lower, width: e.lower.length };
+});

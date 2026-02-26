@@ -19,7 +19,12 @@ export type Step =
   | "merge-bitvector"
   | "show-total"
   | "summary"
-  | "comparison";
+  | "comparison"
+  | "select-setup"
+  | "select-scan"
+  | "select-upper"
+  | "select-lower"
+  | "select-combine";
 
 export const SECTIONS: readonly Section[] = [
   {
@@ -44,7 +49,16 @@ export const SECTIONS: readonly Section[] = [
     name: "Coding, cont'd",
     steps: ["summary", "comparison"],
   },
-  // Future: { name: "Select", steps: [...] },
+  {
+    name: "Select",
+    steps: [
+      "select-setup",
+      "select-scan",
+      "select-upper",
+      "select-lower",
+      "select-combine",
+    ],
+  },
 ];
 
 // Derive flat STEPS from SECTIONS
@@ -66,4 +80,9 @@ export const STEP_LABELS: Record<Step, string> = {
   "show-total":         "Total bit count",
   "summary":            "Encoding complete",
   "comparison":         "Comparison: L = 1",
+  "select-setup":       "Bitvector for decoding",
+  "select-scan":        "Scan for the 5th one-bit",
+  "select-upper":       "Compute upper bits",
+  "select-lower":       "Read lower bits",
+  "select-combine":     "Reconstruct the value",
 };

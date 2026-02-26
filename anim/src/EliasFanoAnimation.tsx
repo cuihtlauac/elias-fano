@@ -15,6 +15,7 @@ import { LowerBitsBar } from "./LowerBitsBar";
 import { Buckets } from "./Buckets";
 import { ComparisonBlock } from "./ComparisonBlock";
 import { ComparisonBlockL3 } from "./ComparisonBlockL3";
+import { SelectAnimation } from "./SelectAnimation";
 
 const SVG_W = 900;
 const SVG_H = 550;
@@ -66,6 +67,7 @@ export function EliasFanoAnimation() {
   } = useStepPlayer();
 
   const isSummary = reached("summary");
+  const inSelectSection = reached("select-setup");
 
   // Keyboard navigation
   useEffect(() => {
@@ -100,8 +102,8 @@ export function EliasFanoAnimation() {
       <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} xmlns="http://www.w3.org/2000/svg">
         <rect width={SVG_W} height={SVG_H} fill="white" />
 
-        {/* Legend (visible once we color-split) */}
-        {reached("color-split") && (
+        {/* Legend (visible once we color-split, hidden in select section) */}
+        {reached("color-split") && !inSelectSection && (
           <motion.g 
             animate={{ y: isSummary ? 105 : 0 }}
             transition={{ type: "spring", stiffness: 60, damping: 20, delay: isSummary ? 0.5 : 0 }}
@@ -144,8 +146,8 @@ export function EliasFanoAnimation() {
           </motion.g>
         )}
 
-        {/* Number boxes */}
-        {displayOrder.map((value, displayIndex) => {
+        {/* Number boxes (hidden in select section) */}
+        {!inSelectSection && displayOrder.map((value, displayIndex) => {
           const elem = ELEMENTS.find((e) => e.value === value)!;
           const bigMode = !reached("sorted");
           const pos = bigMode
@@ -171,26 +173,30 @@ export function EliasFanoAnimation() {
           );
         })}
 
-        {/* Buckets with counts */}
-        <Buckets
-          reached={reached}
-          sources={SORTED.map((_, i) => {
-            const pos = positionFor(i);
-            const yOffset = isSummary ? 105 : 0;
-            return { x: pos.x, y: pos.y + yOffset };
-          })}
-        />
+        {/* Buckets with counts (hidden in select section) */}
+        {!inSelectSection && (
+          <Buckets
+            reached={reached}
+            sources={SORTED.map((_, i) => {
+              const pos = positionFor(i);
+              const yOffset = isSummary ? 105 : 0;
+              return { x: pos.x, y: pos.y + yOffset };
+            })}
+          />
+        )}
 
-        {/* Bottom bars */}
-        <LowerBitsBar
-          visible={reached("lower-to-bottom")}
-          merged={reached("merge-bitvector")}
-          sources={SORTED.map((_, i) => lowerBitsSourceFor(i, isSummary))}
-          reached={reached}
-        />
+        {/* Bottom bars (hidden in select section) */}
+        {!inSelectSection && (
+          <LowerBitsBar
+            visible={reached("lower-to-bottom")}
+            merged={reached("merge-bitvector")}
+            sources={SORTED.map((_, i) => lowerBitsSourceFor(i, isSummary))}
+            reached={reached}
+          />
+        )}
 
         {/* Plus sign between the two bars, before they merge */}
-        {reached("counts-to-unary") && !reached("merge-bitvector") && (
+        {!inSelectSection && reached("counts-to-unary") && !reached("merge-bitvector") && (
           <motion.text
             x={440}
             y={346}
@@ -207,7 +213,7 @@ export function EliasFanoAnimation() {
         )}
 
         {/* Total bit count to the right of merged bitvector */}
-        {reached("show-total") && (
+        {!inSelectSection && reached("show-total") && (
           <motion.text
             fontFamily="Arial, sans-serif"
             fontWeight="bold"
@@ -231,11 +237,12 @@ export function EliasFanoAnimation() {
           </motion.text>
         )}
 
-        {/* Comparison block: L=3 encoding (above 3/2 row) */}
-        <ComparisonBlockL3 visible={reached("comparison")} />
+        {/* Comparison blocks (hidden in select section) */}
+        {!inSelectSection && <ComparisonBlockL3 visible={reached("comparison")} />}
+        {!inSelectSection && <ComparisonBlock visible={reached("comparison")} />}
 
-        {/* Comparison block: L=1 encoding (below 3/2 row) */}
-        <ComparisonBlock visible={reached("comparison")} />
+        {/* Select animation (section 3) */}
+        <SelectAnimation reached={reached} />
       </svg>
 
       {/* Controls */}
