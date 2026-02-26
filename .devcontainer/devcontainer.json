@@ -1,5 +1,6 @@
 {
   "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
   "postCreateCommand": "echo 'PS1=\"$ \"' >> ~/.bashrc && cd anim && npm install",
+  "postAttachCommand": "cd anim && npm run dev",
   "forwardPorts": [5173]
 }
