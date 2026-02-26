@@ -17,7 +17,7 @@ import { ComparisonBlock } from "./ComparisonBlock";
 import { ComparisonBlockL3 } from "./ComparisonBlockL3";
 
 const SVG_W = 900;
-const SVG_H = 450;
+const SVG_H = 550;
 
 // Horizontal positions for 7 sorted boxes
 const BOX_SPACING = 95;
