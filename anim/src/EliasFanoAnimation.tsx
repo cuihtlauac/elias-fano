@@ -1,7 +1,7 @@
 import { UNSORTED, SORTED, ELEMENTS } from "./data";
 import { useStepPlayer } from "./useStepPlayer";
 import { STEP_LABELS } from "./steps";
-import { NumberBox, BIN_TEXT_Y, LOWER_CENTER_X } from "./NumberBox";
+import { NumberBox, BIN_Y, BIN_H, BIN_TEXT_Y, LOWER_CENTER_X } from "./NumberBox";
 import { LowerBitsBar } from "./LowerBitsBar";
 import { Buckets } from "./Buckets";
 
@@ -58,23 +58,23 @@ export function EliasFanoAnimation() {
           <g textAnchor="end">
             <text
               x={135}
-              y={58}
+              y={BOX_Y + BIN_Y + BIN_H / 2 - 4}
               fill="#d32f2f"
               fontFamily="Arial, sans-serif"
               fontWeight="bold"
               fontSize={13}
             >
-              {"w\u2212\u2113 upper bits"}
+              3 upper bits
             </text>
             <text
               x={135}
-              y={74}
+              y={BOX_Y + BIN_Y + BIN_H / 2 + 12}
               fill="#1565c0"
               fontFamily="Arial, sans-serif"
               fontWeight="bold"
               fontSize={13}
             >
-              {"\u2113 lower bits"}
+              2 lower bits
             </text>
           </g>
         )}
