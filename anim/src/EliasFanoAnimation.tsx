@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { UNSORTED, SORTED, ELEMENTS } from "./data";
 import { useStepPlayer } from "./useStepPlayer";
 import { STEP_LABELS } from "./steps";
@@ -55,28 +56,43 @@ export function EliasFanoAnimation() {
 
         {/* Legend (visible once we color-split) */}
         {reached("color-split") && (
-          <g textAnchor="end">
+          <>
+            <g textAnchor="end">
+              <text
+                x={135}
+                y={BOX_Y + BIN_Y + BIN_H / 2 - 4}
+                fill="#d32f2f"
+                fontFamily="Arial, sans-serif"
+                fontWeight="bold"
+                fontSize={13}
+              >
+                3 upper bits
+              </text>
+              <text
+                x={135}
+                y={BOX_Y + BIN_Y + BIN_H / 2 + 12}
+                fill="#1565c0"
+                fontFamily="Arial, sans-serif"
+                fontWeight="bold"
+                fontSize={13}
+              >
+                2 lower bits
+              </text>
+            </g>
             <text
-              x={135}
-              y={BOX_Y + BIN_Y + BIN_H / 2 - 4}
-              fill="#d32f2f"
+              x={810}
+              y={BOX_Y + BIN_Y + BIN_H / 2 + 4}
               fontFamily="Arial, sans-serif"
               fontWeight="bold"
               fontSize={13}
             >
-              3 upper bits
+              <tspan fill="black">(</tspan>
+              <tspan fill="#d32f2f">3</tspan>
+              <tspan fill="black">{" + "}</tspan>
+              <tspan fill="#1565c0">2</tspan>
+              <tspan fill="black">{") \u00D7 7 = 35 bits"}</tspan>
             </text>
-            <text
-              x={135}
-              y={BOX_Y + BIN_Y + BIN_H / 2 + 12}
-              fill="#1565c0"
-              fontFamily="Arial, sans-serif"
-              fontWeight="bold"
-              fontSize={13}
-            >
-              2 lower bits
-            </text>
-          </g>
+          </>
         )}
 
         {/* Number boxes */}
@@ -111,6 +127,26 @@ export function EliasFanoAnimation() {
           merged={reached("merge-bitvector")}
           sources={SORTED.map((_, i) => lowerBitsSourceFor(i))}
         />
+
+        {/* Total bit count below merged bitvector */}
+        {reached("show-total") && (
+          <motion.text
+            x={450}
+            y={390}
+            textAnchor="middle"
+            fontFamily="Arial, sans-serif"
+            fontWeight="bold"
+            fontSize={16}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
+          >
+            <tspan fill="#d32f2f">12</tspan>
+            <tspan fill="black">{" + "}</tspan>
+            <tspan fill="#1565c0">2</tspan>
+            <tspan fill="black">{" \u00D7 7 = 26 bits"}</tspan>
+          </motion.text>
+        )}
       </svg>
     </div>
   );

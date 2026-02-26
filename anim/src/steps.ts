@@ -12,6 +12,7 @@ export const STEPS = [
   "counts-fly",         // 10. Non-zero counts fly to bottom left
   "counts-to-unary",    // 11. Counts morph to unary, orange → red, box drawn
   "merge-bitvector",    // 12. Red and blue bars slide together into one bitvector
+  "show-total",         // 13. Show total bit count below the bitvector
 ] as const;
 
 export type Step = (typeof STEPS)[number];
@@ -29,4 +30,5 @@ export const STEP_LABELS: Record<Step, string> = {
   "counts-fly":         "Collect counts",
   "counts-to-unary":    "Unary-encode counts",
   "merge-bitvector":    "Merged bitvector",
+  "show-total":         "Total bit count",
 };

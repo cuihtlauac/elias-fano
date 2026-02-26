@@ -244,6 +244,24 @@ export function Buckets({ reached, sources }: Props) {
             );
           })}
 
+        {/* "unary!" label to the left of the red bar */}
+        {toUnary && (
+          <motion.text
+            x={BAR_X - 30}
+            y={BAR_Y + BAR_H / 2 + 6}
+            textAnchor="end"
+            fontFamily="Arial, sans-serif"
+            fontWeight="bold"
+            fontSize={18}
+            fill="#d32f2f"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+          >
+            unary!
+          </motion.text>
+        )}
+
         {/* Pen-drawn red box around the unary bar */}
         {toUnary && (
           <motion.rect
