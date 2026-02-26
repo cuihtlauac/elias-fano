@@ -1,5 +1,13 @@
 import { motion } from "framer-motion";
-import { UNSORTED, SORTED, ELEMENTS } from "./data";
+import { useEffect } from "react";
+import {
+  UNSORTED,
+  SORTED,
+  ELEMENTS,
+  UPPER_MERGED_X,
+  UPPER_BAR_W,
+  LOWER_BAR_W,
+} from "./data";
 import { useStepPlayer } from "./useStepPlayer";
 import { STEP_LABELS } from "./steps";
 import { NumberBox, BIN_Y, BIN_H, BIN_TEXT_Y, LOWER_CENTER_X } from "./NumberBox";
@@ -28,11 +36,12 @@ function bigPositionFor(index: number) {
 }
 
 // Lower-bits source positions: computed from NumberBox layout constants
-function lowerBitsSourceFor(index: number) {
+function lowerBitsSourceFor(index: number, isSummary: boolean = false) {
   const pos = positionFor(index);
+  const yOffset = isSummary ? 105 : 0;
   return {
     x: pos.x + LOWER_CENTER_X,
-    y: pos.y + BIN_TEXT_Y,
+    y: pos.y + BIN_TEXT_Y + yOffset,
   };
 }
 
@@ -54,6 +63,23 @@ export function EliasFanoAnimation() {
     sectionIndex,
   } = useStepPlayer();
 
+  const isSummary = reached("summary");
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") {
+        if (e.shiftKey) nextSection();
+        else next();
+      } else if (e.key === "ArrowLeft") {
+        if (e.shiftKey) prevSection();
+        else prev();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [next, prev, nextSection, prevSection]);
+
   // Determine order: unsorted or sorted
   const isSorted = reached("sorted");
   const displayOrder = isSorted ? SORTED : UNSORTED;
@@ -64,7 +90,7 @@ export function EliasFanoAnimation() {
       <div className="header">
         <span className="header-title">Elias-Fano: {sectionName}</span>
         <span className="header-step">
-          {STEP_LABELS[step]} — {sectionIndex + 1}.{localStepIndex + 1}
+          {STEP_LABELS[step]} — {sectionIndex + 1}.{localStepIndex}
         </span>
       </div>
 
@@ -74,7 +100,10 @@ export function EliasFanoAnimation() {
 
         {/* Legend (visible once we color-split) */}
         {reached("color-split") && (
-          <>
+          <motion.g 
+            animate={{ y: isSummary ? 105 : 0 }}
+            transition={{ type: "spring", stiffness: 60, damping: 20, delay: isSummary ? 0.5 : 0 }}
+          >
             <g textAnchor="end">
               <text
                 x={135}
@@ -110,7 +139,7 @@ export function EliasFanoAnimation() {
               <tspan fill="#1565c0">2</tspan>
               <tspan fill="black">{") \u00D7 7 = 35 bits"}</tspan>
             </text>
-          </>
+          </motion.g>
         )}
 
         {/* Number boxes */}
@@ -135,6 +164,7 @@ export function EliasFanoAnimation() {
               step={step}
               reached={reached}
               flyDelay={flyDelay}
+              isSummary={isSummary}
             />
           );
         })}
@@ -142,28 +172,55 @@ export function EliasFanoAnimation() {
         {/* Buckets with counts */}
         <Buckets
           reached={reached}
-          sources={SORTED.map((_, i) => positionFor(i))}
+          sources={SORTED.map((_, i) => {
+            const pos = positionFor(i);
+            const yOffset = isSummary ? 105 : 0;
+            return { x: pos.x, y: pos.y + yOffset };
+          })}
         />
 
         {/* Bottom bars */}
         <LowerBitsBar
           visible={reached("lower-to-bottom")}
           merged={reached("merge-bitvector")}
-          sources={SORTED.map((_, i) => lowerBitsSourceFor(i))}
+          sources={SORTED.map((_, i) => lowerBitsSourceFor(i, isSummary))}
+          reached={reached}
         />
 
-        {/* Total bit count below merged bitvector */}
-        {reached("show-total") && (
+        {/* Plus sign between the two bars, before they merge */}
+        {reached("counts-to-unary") && !reached("merge-bitvector") && (
           <motion.text
-            x={450}
-            y={390}
+            x={440}
+            y={346}
             textAnchor="middle"
             fontFamily="Arial, sans-serif"
             fontWeight="bold"
-            fontSize={16}
+            fontSize={30}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
+          >
+            +
+          </motion.text>
+        )}
+
+        {/* Total bit count below merged bitvector */}
+        {reached("merge-bitvector") && (
+          <motion.text
+            fontFamily="Arial, sans-serif"
+            fontWeight="bold"
+            fontSize={18}
+            initial={{ opacity: 0, x: 450, y: 390, textAnchor: "middle" as const }}
+            animate={{ 
+              opacity: 1,
+              x: reached("summary") ? (UPPER_MERGED_X + UPPER_BAR_W + LOWER_BAR_W + 30) : 450,
+              y: reached("summary") ? 196 : 390,
+              textAnchor: reached("summary") ? ("start" as const) : ("middle" as const)
+            }}
+            transition={{ 
+              duration: 0.5,
+              delay: reached("summary") ? 0.5 : 0
+            }}
           >
             <tspan fill="#d32f2f">12</tspan>
             <tspan fill="black">{" + "}</tspan>

@@ -12,6 +12,7 @@ interface Props {
   step: Step;
   reached: (s: Step) => boolean;
   flyDelay?: number;
+  isSummary?: boolean;
 }
 
 // Decimal box: square
@@ -58,6 +59,7 @@ export function NumberBox({
   step: _step,
   reached,
   flyDelay = 0,
+  isSummary = false,
 }: Props) {
   const showBinary = reached("binary");
   const showColor = reached("color-split");
@@ -117,49 +119,27 @@ export function NumberBox({
         </text>
       </motion.g>
 
-      {/* Binary representation */}
-      {showBinary && !showColor && (
-        <motion.g
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4 }}
-        >
-          <rect
-            x={-FULL_BIN_W / 2}
-            y={BIN_Y}
-            width={FULL_BIN_W}
-            height={BIN_H}
-            fill="none"
-            stroke="black"
-            strokeWidth={1}
-          />
-          <text
-            x={0}
-            y={BIN_TEXT_Y}
-            textAnchor="middle"
-            fontSize={13}
-            fontWeight="bold"
-            fontFamily="monospace"
-            fill="#333"
-          >
-            {binary}
-          </text>
-        </motion.g>
-      )}
-
-      {/* Split boxes: upper (red) + lower (blue) */}
-      {showColor && (
-        <>
-          {/* Upper bits box */}
+      {/* Binary parts: move down in summary mode */}
+      <motion.g
+        animate={{ y: isSummary ? 105 : 0 }}
+        transition={{ 
+          type: "spring", 
+          stiffness: 60, 
+          damping: 20,
+          delay: isSummary ? 0.5 : 0
+        }}
+      >
+        {/* Binary representation */}
+        {showBinary && !showColor && (
           <motion.g
-            initial={{ x: 0 }}
-            animate={{ x: UPPER_CENTER_X }}
-            transition={SPLIT_TRANSITION}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
           >
             <rect
-              x={-UPPER_BOX_W / 2}
+              x={-FULL_BIN_W / 2}
               y={BIN_Y}
-              width={UPPER_BOX_W}
+              width={FULL_BIN_W}
               height={BIN_H}
               fill="none"
               stroke="black"
@@ -172,41 +152,74 @@ export function NumberBox({
               fontSize={13}
               fontWeight="bold"
               fontFamily="monospace"
-              fill="#d32f2f"
+              fill="#333"
             >
-              {upper}
+              {binary}
             </text>
           </motion.g>
+        )}
 
-          {/* Lower bits box (static, stays here) */}
-          <motion.g
-            initial={{ x: 0 }}
-            animate={{ x: LOWER_CENTER_X }}
-            transition={SPLIT_TRANSITION}
-          >
-            <rect
-              x={-LOWER_BOX_W / 2}
-              y={BIN_Y}
-              width={LOWER_BOX_W}
-              height={BIN_H}
-              fill="none"
-              stroke="black"
-              strokeWidth={1}
-            />
-            <text
-              x={0}
-              y={BIN_TEXT_Y}
-              textAnchor="middle"
-              fontSize={13}
-              fontWeight="bold"
-              fontFamily="monospace"
-              fill="#1565c0"
+        {/* Split boxes: upper (red) + lower (blue) */}
+        {showColor && (
+          <>
+            {/* Upper bits box */}
+            <motion.g
+              initial={{ x: 0 }}
+              animate={{ x: UPPER_CENTER_X }}
+              transition={SPLIT_TRANSITION}
             >
-              {lower}
-            </text>
-          </motion.g>
-        </>
-      )}
+              <rect
+                x={-UPPER_BOX_W / 2}
+                y={BIN_Y}
+                width={UPPER_BOX_W}
+                height={BIN_H}
+                fill="none"
+                stroke="black"
+                strokeWidth={1}
+              />
+              <text
+                x={0}
+                y={BIN_TEXT_Y}
+                textAnchor="middle"
+                fontSize={13}
+                fontWeight="bold"
+                fontFamily="monospace"
+                fill="#d32f2f"
+              >
+                {upper}
+              </text>
+            </motion.g>
+
+            {/* Lower bits box (static, stays here) */}
+            <motion.g
+              initial={{ x: 0 }}
+              animate={{ x: LOWER_CENTER_X }}
+              transition={SPLIT_TRANSITION}
+            >
+              <rect
+                x={-LOWER_BOX_W / 2}
+                y={BIN_Y}
+                width={LOWER_BOX_W}
+                height={BIN_H}
+                fill="none"
+                stroke="black"
+                strokeWidth={1}
+              />
+              <text
+                x={0}
+                y={BIN_TEXT_Y}
+                textAnchor="middle"
+                fontSize={13}
+                fontWeight="bold"
+                fontFamily="monospace"
+                fill="#1565c0"
+              >
+                {lower}
+              </text>
+            </motion.g>
+          </>
+        )}
+      </motion.g>
     </motion.g>
   );
 }

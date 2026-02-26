@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
 import { ELEMENTS, LOWER_MERGED_X } from "./data";
+import type { Step } from "./steps";
 
 interface Props {
   visible: boolean;
   merged: boolean;
   /** Source positions: absolute (x, y) of each NumberBox origin in SVG coords */
   sources: { x: number; y: number }[];
+  reached: (s: Step) => boolean;
 }
 
 // Destination layout for the bottom bar
@@ -37,15 +39,24 @@ const DEST_Y = BAR_Y + BAR_H / 2 + 6; // text baseline
 // Box perimeter for the "pen drawing" effect
 const BOX_PERIMETER = 2 * (BAR_W + BAR_H);
 
-export function LowerBitsBar({ visible, merged, sources }: Props) {
+export function LowerBitsBar({ visible, merged, sources, reached }: Props) {
   if (!visible) return null;
 
   const mergeShiftX = merged ? LOWER_MERGED_X - BAR_X : 0;
+  const isSummary = reached("summary");
 
   return (
     <motion.g
-      animate={{ x: mergeShiftX }}
-      transition={{ type: "spring", stiffness: 60, damping: 20 }}
+      animate={{ 
+        x: mergeShiftX,
+        y: isSummary ? -150 : 0
+      }}
+      transition={{ 
+        type: "spring", 
+        stiffness: 60, 
+        damping: 20,
+        delay: isSummary ? 0.5 : 0
+      }}
     >
       {/* Flying lower-bit texts */}
       {ELEMENTS.map((elem, i) => {

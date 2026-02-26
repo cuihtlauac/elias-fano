@@ -36,6 +36,7 @@ export const SECTIONS: readonly Section[] = [
       "counts-to-unary",
       "merge-bitvector",
       "show-total",
+      "summary",
     ],
   },
   // Future: { name: "Select", steps: [...] },
@@ -58,4 +59,5 @@ export const STEP_LABELS: Record<Step, string> = {
   "counts-to-unary":    "Unary-encode counts",
   "merge-bitvector":    "Merged bitvector",
   "show-total":         "Total bit count",
+  "summary":            "Encoding complete",
 };

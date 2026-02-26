@@ -78,6 +78,7 @@ export function Buckets({ reached, sources }: Props) {
   const fly = reached("counts-fly");
   const toUnary = reached("counts-to-unary");
   const merge = reached("merge-bitvector");
+  const isSummary = reached("summary");
   const mergeShiftX = merge ? UPPER_MERGED_X - BAR_X : 0;
 
   if (!showDecimal) return null;
@@ -95,8 +96,8 @@ export function Buckets({ reached, sources }: Props) {
           <motion.g
             key={i}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: i * 0.08 }}
+            animate={{ opacity: isSummary ? 0 : 1 }}
+            transition={{ duration: 0.4, delay: isSummary ? 0 : i * 0.08 }}
           >
             <g transform={`translate(${x}, ${ORIGIN_Y})`}>
               {/* Bucket box */}
@@ -151,15 +152,16 @@ export function Buckets({ reached, sources }: Props) {
               <motion.g
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{
-                  opacity: fadeZero && isZero ? 0 : 1,
+                  opacity: (fadeZero && isZero) || isSummary ? 0 : 1,
                   scale: 1,
                 }}
                 transition={{
                   duration: 0.3,
-                  delay:
-                    LAST_ARROW_PER_BUCKET[i] >= 0
-                      ? LAST_ARROW_PER_BUCKET[i] * 0.15 + 1.1
-                      : 1.1,
+                  delay: isSummary
+                    ? 0
+                    : LAST_ARROW_PER_BUCKET[i] >= 0
+                    ? LAST_ARROW_PER_BUCKET[i] * 0.15 + 1.1
+                    : 1.1,
                 }}
               >
                 <g transform={`translate(${x}, ${ORIGIN_Y - 12})`}>
@@ -192,8 +194,16 @@ export function Buckets({ reached, sources }: Props) {
 
       {/* Upper bar content — slides during merge */}
       <motion.g
-        animate={{ x: mergeShiftX }}
-        transition={{ type: "spring", stiffness: 60, damping: 20 }}
+        animate={{ 
+          x: mergeShiftX,
+          y: isSummary ? -150 : 0
+        }}
+        transition={{ 
+          type: "spring", 
+          stiffness: 60, 
+          damping: 20,
+          delay: isSummary ? 0.5 : 0
+        }}
       >
         {/* Flying numbers to bar */}
         {fly &&
@@ -255,8 +265,8 @@ export function Buckets({ reached, sources }: Props) {
             fontSize={18}
             fill="#d32f2f"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.3 }}
+            animate={{ opacity: isSummary ? 0 : 1 }}
+            transition={{ duration: 0.4, delay: isSummary ? 0 : 0.3 }}
           >
             unary!
           </motion.text>
@@ -309,7 +319,11 @@ export function Buckets({ reached, sources }: Props) {
           const delay = i * 0.15;
 
           return (
-            <g key={`arrow-${arrow.value}`}>
+            <motion.g
+              key={`arrow-${arrow.value}`}
+              animate={{ opacity: isSummary ? 0 : 1 }}
+              transition={{ duration: 0.4 }}
+            >
               <defs>
                 {/* Mask: a solid stroke that grows, revealing the dashed line */}
                 <mask id={maskId}>
@@ -349,7 +363,7 @@ export function Buckets({ reached, sources }: Props) {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.15, delay: delay + duration - 0.1 }}
               />
-            </g>
+            </motion.g>
           );
         })}
     </g>
