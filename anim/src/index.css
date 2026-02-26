@@ -1,0 +1,44 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: #ffffff;
+  color: #213547;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  max-width: 900px;
+  padding: 1rem;
+}
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.75rem 0;
+  font-size: 0.9rem;
+}
+
+.controls button {
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  padding: 0.4em 0.8em;
+  font-size: 0.85rem;
+  cursor: pointer;
+  background: #f5f5f5;
+}
+
+.controls button:hover {
+  background: #e8e8e8;
+}
+
+.controls .step-label {
+  margin-left: auto;
+  color: #666;
+}

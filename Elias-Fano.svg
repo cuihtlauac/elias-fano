@@ -1,0 +1,133 @@
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="450" fill="white"/>
+
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <g transform="translate(100, 40)">
+      <rect x="-25" y="0" width="50" height="45" fill="none" stroke="black" stroke-width="1"/>
+      <text x="0" y="-10" font-weight="bold" font-size="16">2</text>
+      <text x="0" y="30" font-size="14"><tspan fill="#d32f2f" font-weight="bold">000</tspan> <tspan fill="#1565c0" font-weight="bold">10</tspan></text>
+      
+      <g transform="translate(100, 0)">
+        <rect x="-25" y="0" width="50" height="45" fill="none" stroke="black" stroke-width="1"/>
+        <text x="0" y="-10" font-weight="bold" font-size="16">3</text>
+        <text x="0" y="30" font-size="14"><tspan fill="#d32f2f" font-weight="bold">000</tspan> <tspan fill="#1565c0" font-weight="bold">11</tspan></text>
+      </g>
+
+      <g transform="translate(200, 0)">
+        <rect x="-25" y="0" width="50" height="45" fill="none" stroke="black" stroke-width="1"/>
+        <text x="0" y="-10" font-weight="bold" font-size="16">5</text>
+        <text x="0" y="30" font-size="14"><tspan fill="#d32f2f" font-weight="bold">001</tspan> <tspan fill="#1565c0" font-weight="bold">01</tspan></text>
+      </g>
+
+      <g transform="translate(300, 0)">
+        <rect x="-25" y="0" width="50" height="45" fill="none" stroke="black" stroke-width="1"/>
+        <text x="0" y="-10" font-weight="bold" font-size="16">7</text>
+        <text x="0" y="30" font-size="14"><tspan fill="#d32f2f" font-weight="bold">001</tspan> <tspan fill="#1565c0" font-weight="bold">11</tspan></text>
+      </g>
+
+      <g transform="translate(420, 0)">
+        <rect x="-25" y="0" width="50" height="45" fill="none" stroke="black" stroke-width="1"/>
+        <text x="0" y="-10" font-weight="bold" font-size="16">11</text>
+        <text x="0" y="30" font-size="14"><tspan fill="#d32f2f" font-weight="bold">010</tspan> <tspan fill="#1565c0" font-weight="bold">11</tspan></text>
+      </g>
+
+      <g transform="translate(520, 0)">
+        <rect x="-25" y="0" width="50" height="45" fill="none" stroke="black" stroke-width="1"/>
+        <text x="0" y="-10" font-weight="bold" font-size="16">13</text>
+        <text x="0" y="30" font-size="14"><tspan fill="#d32f2f" font-weight="bold">011</tspan> <tspan fill="#1565c0" font-weight="bold">01</tspan></text>
+      </g>
+
+      <g transform="translate(640, 0)">
+        <rect x="-25" y="0" width="50" height="45" fill="none" stroke="black" stroke-width="1"/>
+        <text x="0" y="-10" font-weight="bold" font-size="16">24</text>
+        <text x="0" y="30" font-size="14"><tspan fill="#d32f2f" font-weight="bold">110</tspan> <tspan fill="#1565c0" font-weight="bold">00</tspan></text>
+      </g>
+    </g>
+  </g>
+
+  <text x="10" y="55" fill="#d32f2f" font-family="Arial, sans-serif" font-weight="bold" font-style="italic" font-size="16">w-l upper bits</text>
+  <text x="10" y="85" fill="#1565c0" font-family="Arial, sans-serif" font-weight="bold" font-style="italic" font-size="16">l lower bits</text>
+
+  <g transform="translate(80, 200)" font-family="Arial, sans-serif" text-anchor="middle">
+    <g transform="translate(0,0)">
+      <circle cx="0" cy="-20" r="12" fill="none" stroke="orange" stroke-width="2"/>
+      <text x="0" y="-15" font-size="12" fill="orange" font-weight="bold">2</text>
+      <rect x="-25" y="0" width="50" height="25" fill="none" stroke="black" stroke-width="2"/>
+      <text x="0" y="18" font-weight="bold">000</text>
+    </g>
+    <g transform="translate(60,0)">
+      <circle cx="0" cy="-20" r="12" fill="none" stroke="orange" stroke-width="2"/>
+      <text x="0" y="-15" font-size="12" fill="orange" font-weight="bold">2</text>
+      <rect x="-25" y="0" width="50" height="25" fill="none" stroke="black" stroke-width="2"/>
+      <text x="0" y="18" font-weight="bold">001</text>
+    </g>
+    <g transform="translate(120,0)">
+      <circle cx="0" cy="-20" r="12" fill="none" stroke="orange" stroke-width="2"/>
+      <text x="0" y="-15" font-size="12" fill="orange" font-weight="bold">1</text>
+      <rect x="-25" y="0" width="50" height="25" fill="none" stroke="black" stroke-width="2"/>
+      <text x="0" y="18" font-weight="bold">010</text>
+    </g>
+    <g transform="translate(180,0)">
+      <circle cx="0" cy="-20" r="12" fill="none" stroke="orange" stroke-width="2"/>
+      <text x="0" y="-15" font-size="12" fill="orange" font-weight="bold">1</text>
+      <rect x="-25" y="0" width="50" height="25" fill="none" stroke="black" stroke-width="2"/>
+      <text x="0" y="18" font-weight="bold">011</text>
+    </g>
+    <g transform="translate(240,0)">
+      <circle cx="0" cy="-20" r="12" fill="none" stroke="orange" stroke-width="2"/>
+      <text x="0" y="-15" font-size="12" fill="orange" font-weight="bold">0</text>
+      <rect x="-25" y="0" width="50" height="25" fill="none" stroke="black" stroke-width="2"/>
+      <text x="0" y="18" font-weight="bold">100</text>
+    </g>
+    <g transform="translate(300,0)">
+      <circle cx="0" cy="-20" r="12" fill="none" stroke="orange" stroke-width="2"/>
+      <text x="0" y="-15" font-size="12" fill="orange" font-weight="bold">0</text>
+      <rect x="-25" y="0" width="50" height="25" fill="none" stroke="black" stroke-width="2"/>
+      <text x="0" y="18" font-weight="bold">101</text>
+    </g>
+    <g transform="translate(360,0)">
+      <circle cx="0" cy="-20" r="12" fill="none" stroke="orange" stroke-width="2"/>
+      <text x="0" y="-15" font-size="12" fill="orange" font-weight="bold">1</text>
+      <rect x="-25" y="0" width="50" height="25" fill="none" stroke="black" stroke-width="2"/>
+      <text x="0" y="18" font-weight="bold">110</text>
+    </g>
+    <g transform="translate(420,0)">
+      <circle cx="0" cy="-20" r="12" fill="none" stroke="orange" stroke-width="2"/>
+      <text x="0" y="-15" font-size="12" fill="orange" font-weight="bold">0</text>
+      <rect x="-25" y="0" width="50" height="25" fill="none" stroke="black" stroke-width="2"/>
+      <text x="0" y="18" font-weight="bold">111</text>
+    </g>
+  </g>
+
+  <rect x="200" y="320" width="220" height="40" fill="none" stroke="#d32f2f" stroke-width="2"/>
+  <text x="310" y="347" font-family="monospace" font-size="18" font-weight="bold" fill="#d32f2f" text-anchor="middle">110 110 10 10 0 0 10 0</text>
+
+  <text x="445" y="350" font-family="Arial, sans-serif" font-size="30" font-weight="bold">+</text>
+
+  <rect x="480" y="320" width="230" height="40" fill="none" stroke="#1565c0" stroke-width="2"/>
+  <text x="595" y="347" font-family="monospace" font-size="18" font-weight="bold" fill="#1565c0" text-anchor="middle">10 11 01 11 11 01 00</text>
+
+  <g stroke="orange" stroke-dasharray="4,2" fill="none">
+    <path d="M 85,85 Q 85,150 80,180" marker-end="url(#arrow)"/>
+    <path d="M 185,85 Q 120,150 100,180" marker-end="url(#arrow)"/>
+    <path d="M 285,85 Q 200,150 140,180" marker-end="url(#arrow)"/>
+    <path d="M 385,85 Q 280,150 160,180" marker-end="url(#arrow)"/>
+    <path d="M 725,85 Q 600,150 440,180" marker-end="url(#arrow)"/>
+  </g>
+
+  <g stroke="#1565c0" fill="none">
+    <path d="M 110,85 Q 110,150 490,320" opacity="0.6"/>
+    <path d="M 210,85 Q 210,150 515,320" opacity="0.6"/>
+    <path d="M 310,85 Q 310,150 545,320" opacity="0.6"/>
+    <path d="M 410,85 Q 410,150 575,320" opacity="0.6"/>
+    <path d="M 530,85 Q 530,150 610,320" opacity="0.6"/>
+    <path d="M 630,85 Q 630,150 645,320" opacity="0.6"/>
+    <path d="M 750,85 Q 750,150 685,320" opacity="0.6"/>
+  </g>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="orange" />
+    </marker>
+  </defs>
+</svg>
