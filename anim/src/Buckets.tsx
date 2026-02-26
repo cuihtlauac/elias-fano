@@ -5,6 +5,7 @@ import {
   ELEMENTS,
   NONZERO_BUCKETS,
   UNARY_PARTS,
+  UPPER_MERGED_X,
 } from "./data";
 import type { Step } from "./steps";
 
@@ -67,12 +68,6 @@ function unaryDestX(nzIndex: number): number {
 
 const DEST_BAR_Y = BAR_Y + BAR_H / 2 + 6; // text baseline
 
-// Map bucketIndex → index in NONZERO_BUCKETS (or -1)
-const BUCKET_TO_NZ: number[] = Array.from({ length: NUM_BUCKETS }, (_, i) => {
-  const idx = NONZERO_BUCKETS.findIndex((b) => b.bucketIndex === i);
-  return idx;
-});
-
 const SPRING = { type: "spring" as const, stiffness: 30, damping: 14 };
 
 export function Buckets({ reached, sources }: Props) {
@@ -82,7 +77,8 @@ export function Buckets({ reached, sources }: Props) {
   const fadeZero = reached("counts-fade-zero");
   const fly = reached("counts-fly");
   const toUnary = reached("counts-to-unary");
-  const showPlus = reached("upper-plus");
+  const merge = reached("merge-bitvector");
+  const mergeShiftX = merge ? UPPER_MERGED_X - BAR_X : 0;
 
   if (!showDecimal) return null;
 
@@ -94,32 +90,6 @@ export function Buckets({ reached, sources }: Props) {
         const binaryLabel = i.toString(2).padStart(3, "0");
         const count = BUCKET_COUNTS[i];
         const isZero = count === 0;
-        const nzIndex = BUCKET_TO_NZ[i];
-
-        // Count circle position: at bucket or flying to bar
-        const circleAtBucketX = x;
-        const circleAtBucketY = ORIGIN_Y - 12;
-        const circleDestX = nzIndex >= 0 ? unaryDestX(nzIndex) : circleAtBucketX;
-        const circleDestY = DEST_BAR_Y;
-
-        // Determine circle animated position
-        const circleX = fly && !isZero ? circleDestX : circleAtBucketX;
-        const circleY = fly && !isZero ? circleDestY : circleAtBucketY;
-
-        // Color: orange by default, red when morphed to unary
-        const countColor = toUnary && !isZero ? "#d32f2f" : "orange";
-
-        // Text content: decimal count or unary
-        const countText =
-          toUnary && !isZero
-            ? UNARY_PARTS[i]
-            : String(count);
-
-        // Should the circle be visible?
-        const circleVisible = showArrows && !(fadeZero && isZero);
-
-        // When flying, hide the circle border (they merge into the bar)
-        const showCircleBorder = !fly || isZero;
 
         return (
           <motion.g
@@ -216,25 +186,35 @@ export function Buckets({ reached, sources }: Props) {
               </motion.g>
             )}
 
-            {/* Flying number (no circle) — travels to the bar, grows in size */}
-            {fly && !isZero && nzIndex >= 0 && (
+          </motion.g>
+        );
+      })}
+
+      {/* Upper bar content — slides during merge */}
+      <motion.g
+        animate={{ x: mergeShiftX }}
+        transition={{ type: "spring", stiffness: 60, damping: 20 }}
+      >
+        {/* Flying numbers to bar */}
+        {fly &&
+          NONZERO_BUCKETS.map((bucket, nzIndex) => {
+            const bIdx = bucket.bucketIndex;
+            const startX = ORIGIN_X + bIdx * BUCKET_SPACING;
+            const startY = ORIGIN_Y - 12 + 5; // circle center + text offset
+            const destX = unaryDestX(nzIndex);
+            const destY = DEST_BAR_Y;
+
+            return (
               <motion.g
-                initial={{
-                  x: circleAtBucketX,
-                  y: circleAtBucketY,
-                  scale: 1,
-                }}
-                animate={{
-                  x: circleDestX,
-                  y: circleDestY,
-                  scale: 18 / 12, // grow from fontSize 12 to 18
-                }}
+                key={`fly-${bIdx}`}
+                initial={{ x: startX, y: startY, scale: 1 }}
+                animate={{ x: destX, y: destY, scale: 18 / 12 }}
                 transition={{ ...SPRING, delay: nzIndex * 0.12 }}
               >
                 {/* Orange decimal — fades out when switching to unary */}
                 <motion.text
                   x={0}
-                  y={5}
+                  y={0}
                   textAnchor="middle"
                   fontSize={12}
                   fontWeight="bold"
@@ -243,12 +223,12 @@ export function Buckets({ reached, sources }: Props) {
                   animate={{ opacity: toUnary ? 0 : 1 }}
                   transition={{ duration: 0.5 }}
                 >
-                  {count}
+                  {bucket.count}
                 </motion.text>
                 {/* Red unary — fades in simultaneously */}
                 <motion.text
                   x={0}
-                  y={5}
+                  y={0}
                   textAnchor="middle"
                   fontSize={12}
                   fontWeight="bold"
@@ -258,51 +238,33 @@ export function Buckets({ reached, sources }: Props) {
                   animate={{ opacity: toUnary ? 1 : 0 }}
                   transition={{ duration: 0.5 }}
                 >
-                  {UNARY_PARTS[i]}
+                  {UNARY_PARTS[bIdx]}
                 </motion.text>
               </motion.g>
-            )}
-          </motion.g>
-        );
-      })}
+            );
+          })}
 
-      {/* Pen-drawn red box around the unary bar */}
-      {toUnary && (
-        <motion.rect
-          x={BAR_X}
-          y={BAR_Y}
-          width={BAR_W}
-          height={BAR_H}
-          fill="none"
-          stroke="#d32f2f"
-          strokeWidth={2}
-          strokeDasharray={BOX_PERIMETER}
-          strokeDashoffset={BOX_PERIMETER}
-          animate={{ strokeDashoffset: 0 }}
-          transition={{
-            duration: 0.8,
-            delay: 0.5,
-            ease: "easeInOut",
-          }}
-        />
-      )}
-
-      {/* Plus sign between upper and lower bars */}
-      {showPlus && (
-        <motion.text
-          x={445}
-          y={350}
-          fontFamily="Arial, sans-serif"
-          fontSize={30}
-          fontWeight="bold"
-          textAnchor="middle"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4 }}
-        >
-          +
-        </motion.text>
-      )}
+        {/* Pen-drawn red box around the unary bar */}
+        {toUnary && (
+          <motion.rect
+            x={BAR_X}
+            y={BAR_Y}
+            width={BAR_W}
+            height={BAR_H}
+            fill="none"
+            stroke="#d32f2f"
+            strokeWidth={2}
+            strokeDasharray={BOX_PERIMETER}
+            strokeDashoffset={BOX_PERIMETER}
+            animate={{ strokeDashoffset: 0 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.5,
+              ease: "easeInOut",
+            }}
+          />
+        )}
+      </motion.g>
 
       {/* Arrows from upper bits to buckets */}
       {showArrows &&

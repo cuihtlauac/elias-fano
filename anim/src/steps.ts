@@ -11,7 +11,7 @@ export const STEPS = [
   "counts-fade-zero",   // 9. Zero counts fade away
   "counts-fly",         // 10. Non-zero counts fly to bottom left
   "counts-to-unary",    // 11. Counts morph to unary, orange → red, box drawn
-  "upper-plus",         // 12. "+" sign appears between the two bars
+  "merge-bitvector",    // 12. Red and blue bars slide together into one bitvector
 ] as const;
 
 export type Step = (typeof STEPS)[number];
@@ -28,5 +28,5 @@ export const STEP_LABELS: Record<Step, string> = {
   "counts-fade-zero":   "Discard empty buckets",
   "counts-fly":         "Collect counts",
   "counts-to-unary":    "Unary-encode counts",
-  "upper-plus":         "Upper + Lower bitvectors",
+  "merge-bitvector":    "Merged bitvector",
 };

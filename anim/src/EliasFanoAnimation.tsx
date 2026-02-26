@@ -108,6 +108,7 @@ export function EliasFanoAnimation() {
         {/* Bottom bars */}
         <LowerBitsBar
           visible={reached("lower-to-bottom")}
+          merged={reached("merge-bitvector")}
           sources={SORTED.map((_, i) => lowerBitsSourceFor(i))}
         />
       </svg>

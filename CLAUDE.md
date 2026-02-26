@@ -22,6 +22,7 @@ The user prefers animations that feel deliberate and readable:
 
 - **"Flying copies"**: when data moves from one part of the diagram to another, a copy of the text flies from source to destination (the original stays). Each piece departs staggered (delay ~0.15s between items). Use slow springs (`stiffness: 30, damping: 14`) so the movement is easy to follow.
 - **"Pen-drawn" borders**: after flying elements land, the enclosing box draws itself using `strokeDasharray`/`strokeDashoffset` animation, as if traced by a pen.
+- **Split boxes for flying elements**: when an element needs to fly somewhere, render it as its own independent box from the start. At the split step, the parent box animates apart into separate sub-boxes. The flying copy is a sibling element starting at the exact same position (same font size, same coordinates). This avoids DOM measurement (`getBoundingClientRect`/`getScreenCTM`) — positions are pure arithmetic from shared exported constants. Key lesson: flying copies must use the same native `fontSize` as the static element and `scale` up at the destination; rendering at a larger fontSize with a smaller scale causes glyph-metric mismatches.
 - Overall: keep transitions slow enough to read. Avoid snappy/instant appearances — things should visibly travel or grow.
 
 ### Running
@@ -46,7 +47,7 @@ Precomputes: binary representations, upper/lower bit splits, bucket counts, unar
 1. **unsorted** — show the integers in arbitrary order
 2. **sorted** — slide them into sorted order
 3. **binary** — binary representation appears below each number
-4. **color-split** — upper bits red, lower bits blue
+4. **color-split** — binary box splits into red upper + blue lower boxes
 5. **lower-to-bottom** — lower-bits fly to bottom-right bar
 6. **buckets-decimal** — 8 bucket boxes appear with decimal labels 0–7
 7. **buckets-binary** — decimal labels crossfade to binary 000–111
@@ -60,7 +61,7 @@ Precomputes: binary representations, upper/lower bit splits, bucket counts, unar
 
 | File | Role |
 |---|---|
-| `NumberBox.tsx` | One element: square decimal box + tight binary rectangle below |
+| `NumberBox.tsx` | Decimal box + binary box that splits into upper (red) / lower (blue) sub-boxes. Exports layout constants (`BIN_TEXT_Y`, `LOWER_CENTER_X`, etc.) for position arithmetic. |
 | `Buckets.tsx` | Bucket boxes, arrows, count circles, flying counts→unary bar, "+" sign |
 | `LowerBitsBar.tsx` | Blue lower-bits bitvector bar |
 | `EliasFanoAnimation.tsx` | Orchestrator: lays out components, wires step logic |

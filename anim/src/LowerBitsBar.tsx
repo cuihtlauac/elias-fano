@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
-import { ELEMENTS } from "./data";
+import { ELEMENTS, LOWER_MERGED_X } from "./data";
 
 interface Props {
   visible: boolean;
+  merged: boolean;
   /** Source positions: absolute (x, y) of each NumberBox origin in SVG coords */
   sources: { x: number; y: number }[];
 }
@@ -36,19 +37,22 @@ const DEST_Y = BAR_Y + BAR_H / 2 + 6; // text baseline
 // Box perimeter for the "pen drawing" effect
 const BOX_PERIMETER = 2 * (BAR_W + BAR_H);
 
-export function LowerBitsBar({ visible, sources }: Props) {
+export function LowerBitsBar({ visible, merged, sources }: Props) {
   if (!visible) return null;
 
+  const mergeShiftX = merged ? LOWER_MERGED_X - BAR_X : 0;
+
   return (
-    <g>
+    <motion.g
+      animate={{ x: mergeShiftX }}
+      transition={{ type: "spring", stiffness: 60, damping: 20 }}
+    >
       {/* Flying lower-bit texts */}
       {ELEMENTS.map((elem, i) => {
         const src = sources[i];
         if (!src) return null;
-        // Source position: exact center of the lower-bits tspan (measured from DOM)
         const sx = src.x;
         const sy = src.y;
-        // Destination position
         const dx = destX(i);
         const dy = DEST_Y;
 
@@ -91,10 +95,10 @@ export function LowerBitsBar({ visible, sources }: Props) {
         animate={{ strokeDashoffset: 0 }}
         transition={{
           duration: 0.8,
-          delay: ELEMENTS.length * 0.15 + 0.8, // after all texts land
+          delay: ELEMENTS.length * 0.15 + 0.8,
           ease: "easeInOut",
         }}
       />
-    </g>
+    </motion.g>
   );
 }

@@ -48,3 +48,21 @@ export const NONZERO_BUCKETS = BUCKET_COUNTS
     unary: UNARY_PARTS[bucketIndex],
   }))
   .filter((b) => b.count > 0);
+
+// Bar layout constants (shared between Buckets and LowerBitsBar for merge)
+export const BAR_CHAR_W = 11;
+export const BAR_PAD = 20;
+
+const UPPER_BAR_STRINGS = NONZERO_BUCKETS.map((b) => b.unary);
+const UPPER_BAR_JOINED = UPPER_BAR_STRINGS.join(" ");
+export const UPPER_BAR_W = UPPER_BAR_JOINED.length * BAR_CHAR_W + BAR_PAD;
+
+const LOWER_BAR_STRINGS = ELEMENTS.map((e) => e.lower);
+const LOWER_BAR_JOINED = LOWER_BAR_STRINGS.join(" ");
+export const LOWER_BAR_W = LOWER_BAR_JOINED.length * BAR_CHAR_W + BAR_PAD;
+
+// Merged bitvector: both bars centered in SVG
+const SVG_CENTER_X = 450;
+const MERGED_TOTAL_W = UPPER_BAR_W + LOWER_BAR_W;
+export const UPPER_MERGED_X = SVG_CENTER_X - MERGED_TOTAL_W / 2;
+export const LOWER_MERGED_X = UPPER_MERGED_X + UPPER_BAR_W;
